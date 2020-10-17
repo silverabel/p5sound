@@ -1,0 +1,100 @@
+<html>
+<head>
+<meta charset="UTF-8">
+
+<script src="https://cdn.jsdelivr.net/npm/p5@1.1.9/lib/p5.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/p5@1.1.9/lib/addons/p5.sound.min.js"></script>
+
+<script defer>
+  var laul;
+  var sliderVolume;
+  var sliderPan;
+  var sliderRate;
+  var mängiNupp;
+  var amplituud;
+
+
+  function setup() {
+    createCanvas(200,200);
+
+    laul = loadSound("https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_700KB.mp3", laetud, laadimineFail);
+
+    sliderVolume = createSlider(0, 1, 0.5, 0.1);
+    sliderPan = createSlider(-1, 1, 0, 0.1);
+    sliderRate = createSlider(0, 2, 1, 0.1);
+
+    laul.addCue(5, hüppaAlgusesse);
+    laul.removeCue(0);
+
+    amplituud = new p5.Amplitude();
+  }
+
+
+
+  function hüppaAlgusesse() {
+    laul.jump(0);
+  }
+
+
+  function togglePlaying() {
+    if (laul.isPlaying()) {
+      laul.pause();
+      mängiNupp.html("Mängi");
+    }
+    else {
+      laul.play();
+      mängiNupp.html("Pause")
+    }
+  }
+
+
+  function laetud() {
+    document.getElementById("laadimine").innerHTML = "Helifail laetud";
+    mängiNupp = createButton("Mängi");
+    mängiNupp.mousePressed(togglePlaying);
+
+    let lauluPikkus = Math.floor(laul.duration());
+    
+    laul.addCue(lauluPikkus, muudaNupp);
+  }
+
+
+  function muudaNupp() {
+    mängiNupp.html("Mängi uuesti");
+    console.log('tere')
+  }
+
+
+  function laadimineFail() {
+    document.getElementById("laadimine").innerHTML = "Helifaili laadimine ebaõnnestus";
+  }
+
+
+  function draw() {
+    laul.setVolume(sliderVolume.value());
+    laul.pan(sliderPan.value());
+    laul.rate(sliderRate.value());
+
+    background(51);
+
+    var helitugevus = amplituud.getLevel();
+
+    ellipse(width / 2, height / 2, helitugevus * 300, helitugevus * 300);
+
+  }
+
+
+
+
+</script>
+
+
+
+
+</head>
+<body>
+  <div id="laadimine"></div>
+  
+
+</body>
+</html>
